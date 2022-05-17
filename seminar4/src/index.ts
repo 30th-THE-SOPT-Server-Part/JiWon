@@ -8,6 +8,14 @@ require('dotenv').config();
 
 connectDB(); //서버 실행 시 db 띄우기
 
+//swagger 연결
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+const path = require('path');
+const swaggerSpec = YAML.load(path.join(__dirname, '../build/swagger.yaml'))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); //request 들어오면 json으로 변경해주겠다.
 
@@ -27,7 +35,11 @@ app.use(function (err: ErrorType, req: Request, res: Response, next: NextFunctio
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  //res.render("error");
+  res.json({
+    message: err.message,
+    error: err
+  });
 });
 
 app

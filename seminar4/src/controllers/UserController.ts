@@ -16,6 +16,7 @@ import { validationResult } from "express-validator";
  * @access Public //쿠키, 세션, 토큰 같은 것 사용할 때
  */
 const createUser = async (req: Request, res: Response) => { //비동기처리 해주기
+
     const error = validationResult(req); //validation 검사
     if(!error.isEmpty()){ //validation error가 발생했으면 오류 메시지 발생
         console.log(error);
@@ -45,6 +46,7 @@ const createUser = async (req: Request, res: Response) => { //비동기처리 �
  * @access Public //쿠키, 세션, 토큰 같은 것 사용할 때
  */
 const updateUser = async (req:Request, res:Response): Promise<void> => {
+
     const userUpdateDto: UserUpdateDto = req.body;
     const {userId} = req.params;
     console.log("Controller IN");
@@ -67,6 +69,7 @@ const updateUser = async (req:Request, res:Response): Promise<void> => {
  * @access Public //쿠키, 세션, 토큰 같은 것 사용할 때
  */
 const findUserById = async (req:Request, res:Response)=> {
+
     const {userId} = req.params;
     console.log("Controller IN");
 
@@ -93,6 +96,8 @@ const findUserById = async (req:Request, res:Response)=> {
  * @access Public //쿠키, 세션, 토큰 같은 것 사용할 때
  */
 const deleteUser = async (req:Request, res:Response)=>{
+
+
     const {userId} = req.params;
     console.log("Controller IN");
 

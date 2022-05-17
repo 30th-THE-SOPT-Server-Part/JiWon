@@ -5,6 +5,8 @@ import { body } from "express-validator";
 const router: Router = Router();
 
 //route => (/user) => post
+
+
 router.post('/', [
     body('name', "이름을 입력해주세요").notEmpty(),
     body('phone', "유효한 핸드폰 번호를 입력해주세요").isLength({min:8, max:11}),
@@ -13,6 +15,8 @@ router.post('/', [
     //phone, email, age, school
 ] ,UserController.createUser);
 router.put('/:userId',UserController.updateUser);
+
+//#swagger.description = 'Some description...'
 router.get('/:userId',UserController.findUserById);
 router.delete('/:userId',UserController.deleteUser);
 
