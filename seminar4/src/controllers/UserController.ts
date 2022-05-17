@@ -7,13 +7,20 @@ import message from "../modules/responseMessage";
 import statusCode from "../modules/statusCode";
 import util from "../modules/util";
 import {UserService} from "../services";
+import { validationResult } from "express-validator";
+
 
 /**
  * @route POST /user
  * @desc Create User
  * @access Public //쿠키, 세션, 토큰 같은 것 사용할 때
  */
-const createUser = async (req: Request, res: Response):Promise<void> => { //비동기처리 해주기
+const createUser = async (req: Request, res: Response) => { //비동기처리 해주기
+    const error = validationResult(req); //validation 검사
+    if(!error.isEmpty()){ //validation error가 발생했으면 오류 메시지 발생
+        console.log(error);
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+    }
     const userCreateDto: UserCreateDto = req.body; //UserCreateDto로 req.body 받아옴
 
     //async await을 사용하기 때문에 try,catch문을 사용한다.
