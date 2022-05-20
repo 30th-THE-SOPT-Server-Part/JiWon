@@ -10,4 +10,10 @@ router.post('/', [
     body('director').notEmpty()
 ], MovieController.createMovie);
 
+router.post('/:movieId/comment',[
+    body('writer').notEmpty(),
+    body('comment').notEmpty()
+], MovieController.createMovieComment);
+
+router.get('/:movieId', MovieController.getMovie);
 export default router;
