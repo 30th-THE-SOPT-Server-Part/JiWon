@@ -16,6 +16,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true //유일하게 지정
     },
+    password:{
+        type: String,
+        required: true
+    },
     age:{
         type: Number
     },

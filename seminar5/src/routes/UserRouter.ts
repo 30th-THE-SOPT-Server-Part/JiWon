@@ -6,6 +6,12 @@ const router: Router = Router();
 
 //route => (/user) => post
 
+router.post('/signin',[
+    body('email').notEmpty(),
+    body('password').notEmpty(),
+    body('password').isLength({min:8, max:16}),
+    body('email').isEmail()
+], UserController.signInUser);
 
 router.post('/', [
     body('name', "이름을 입력해주세요").notEmpty(),

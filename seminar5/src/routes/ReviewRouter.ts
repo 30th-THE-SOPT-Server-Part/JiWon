@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ReviewController from "../controllers/ReviewController";
 import { body } from "express-validator/check"; //express 바디에 있는 객체들로 바로 검증을 해주는 애들
+import auth from "../middlewares/auth";
 
 const router : Router = Router();
 
@@ -11,6 +12,6 @@ router.post('/movies/:movieId', [ //컨트롤러로 들어가기 전에 req 값�
 ]
 , ReviewController.createReview);
 
-router.get('/movies/:movieId', ReviewController.getReviews);
+router.get('/movies/:movieId', auth, ReviewController.getReviews);
 
 export default router;
