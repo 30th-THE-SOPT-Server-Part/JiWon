@@ -1,0 +1,99 @@
+/user:
+  post:
+    tags:
+      - User
+    summary: 유저 생성
+    consumes:
+      - application/json
+    requestBody:
+      x-name: body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './openapi.yaml#/components/schemas/user'
+          examples:
+            userExample:
+              $ref: './openapi.yaml#/components/examples/userExample'
+    responses:
+      '200':
+        $ref: './openapi.yaml#/components/responses/successResponse'
+      '400':
+        $ref: './openapi.yaml#/components/responses/BadRequest'
+      '500':
+        $ref: './openapi.yaml#/components/responses/InternalServerError'
+
+/user/{userId}:
+  get:
+    tags:
+      - User
+    summary: 유저 정보 조회
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        description: 유저 id
+        schema:
+          type: string
+    responses:
+      '200':
+        description: 유저 조회 성공
+        content:
+          application/json:
+            schema:
+              type: object
+              example: {
+              "status": 200,
+                "success": true,
+                "message": "유저 조회 성공",
+                "data": {
+                  "school": {
+                    "name": "서울대학교",
+                    "major": "컴퓨터공학부"
+                  },
+                  "_id": "6283a755c2f673e5e81a6fea",
+                  "name": "유지원",
+                  "phone": "01011112222",
+                  "email": "validateTest-email2@naver.com",
+                  "age": 20,
+                  "__v": 0
+                }
+              }
+      '400':
+        $ref: './openapi.yaml#/components/responses/BadRequest'
+      '500':
+        $ref: './openapi.yaml#/components/responses/InternalServerError'
+  put:
+    tags:
+      - User
+    summary: 유저 정보 수정
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        description: 유저 id
+        schema:
+          type: string
+    consumes:
+      - application/json
+    requestBody:
+      description: \[Optional\] name, age, phone, email, school-name, school-major
+      x-name: body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './openapi.yaml#/components/schemas/user'
+
+  delete:
+    tags:
+      - User
+    summary: 유저 삭제
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        description: 유저 id
+        schema:
+          type: string
+                  
