@@ -16,4 +16,9 @@ router.post('/:movieId/comment',[
 ], MovieController.createMovieComment);
 
 router.get('/:movieId', MovieController.getMovie);
+
+router.put('/:movieId/comment/:commentId',[
+    body('comment').notEmpty()
+], auth, MovieController.updateMovieComment);
+
 export default router;

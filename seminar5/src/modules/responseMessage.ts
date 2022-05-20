@@ -21,6 +21,7 @@ const message = {
     CREATED_MOVIE_SUCCESS: '영화 생성 성공',
     CREATED_MOVIE_COMMENT_SUCCESS: '영화 댓글 생성 성공',
     READ_MOVIE_SUCCESS: '영화 조회 성공',
+    UPDATE_MOVIE_COMMENT_SUCCESS: '영화 댓글 수정 성공',
 
     //리뷰
     CREATED_REVIEW_SUCCESS: '리뷰 작성 성공',

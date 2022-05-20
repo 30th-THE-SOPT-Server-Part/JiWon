@@ -7,6 +7,7 @@ import { MovieCreateDto } from "../interfaces/movie/MovieCreateDto";
 import MovieService from "../services/MovieService";
 import { stat } from "fs";
 import { MovieCommentCreaateDto } from "../interfaces/movie/MovieCommentCreateDto";
+import { MovieCommentUpdateDto } from "../interfaces/movie/MovieCommentUpdateDto";
 
 /**
  * @route POST /movie
@@ -84,8 +85,38 @@ const getMovie = async (req:Request, res:Response) => {
 }
 
 
+/**
+ * @route PUT /movie/:movieId/comment/:commentId
+ * @Desc Update Movie Comment
+ * @Access Private 
+ */
+ const updateMovieComment = async(req:Request, res:Response)=>{
+    const error = validationResult(req); //validation 검사
+    if(!error.isEmpty()){ //validation error가 발생했으면 오류 메시지 발생
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+    }
+
+    const movieCommentUpdateDto: MovieCommentUpdateDto = req.body;
+    const {movieId, commentId} = req.params;
+    const userId = req.body.user.id; //페이로드에서 body에 담아둠
+
+    try{
+        const data = await MovieService.updateMovieComment(movieId, commentId, userId, movieCommentUpdateDto);
+        if(!data) {
+            res.status(statusCode.NOT_FOUND).send(util.fail(statusCode.NOT_FOUND,message.NOT_FOUND));
+        }
+        res.status(statusCode.OK).send(util.success(statusCode.OK,message.UPDATE_MOVIE_COMMENT_SUCCESS,data));
+
+    }catch(error){
+        console.log(error);
+        res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+    }
+ }
+
+
 export default{
     createMovie,
     createMovieComment,
-    getMovie
+    getMovie,
+    updateMovieComment
 }

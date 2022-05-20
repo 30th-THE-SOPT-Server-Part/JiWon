@@ -1,5 +1,6 @@
 import { PostBaseResponseDto } from "../interfaces/common/PostBaseResponseDto";
 import { MovieCommentCreaateDto } from "../interfaces/movie/MovieCommentCreateDto";
+import { MovieCommentUpdateDto } from "../interfaces/movie/MovieCommentUpdateDto";
 import { MovieCreateDto } from "../interfaces/movie/MovieCreateDto";
 import { MovieCommentInfo, MovieInfo } from "../interfaces/movie/MovieInfo";
 import { MovieResponseDto } from "../interfaces/movie/MovieResponseDto";
@@ -54,8 +55,32 @@ const getMovie = async(movieId:string): Promise<MovieResponseDto| null> => {
     }
 }
 
+const updateMovieComment = async(movieId: string, commentId:string, userId: string, movieCommentUpdateDto:MovieCommentUpdateDto): Promise<MovieInfo | null> => {
+    try{
+        const movie = await Movie.findById(movieId);
+        if(!movie) return null;
+
+        const data = await Movie.findOneAndUpdate(
+            { _id: movieId, comments: { $elemMatch: {_id:commentId, writer:userId}}},{ //영화를 찾고, commentId,userId에 해당하는 댓글 찾기
+                $set: { //comment를 세팅
+                    'comments.$.writer':userId,
+                    'comments.$.comment': movieCommentUpdateDto.comment
+                }
+            },
+            {new : true}
+        );
+
+        return data;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     createMovie,
     createMovieComment,
-    getMovie
+    getMovie,
+    updateMovieComment
 }
