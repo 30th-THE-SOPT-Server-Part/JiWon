@@ -21,4 +21,6 @@ router.put('/:movieId/comment/:commentId',[
     body('comment').notEmpty()
 ], auth, MovieController.updateMovieComment);
 
+router.get('/',MovieController.getMovieSearch);
+
 export default router;

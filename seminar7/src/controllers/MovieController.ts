@@ -112,11 +112,29 @@ const getMovie = async (req:Request, res:Response) => {
         res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
     }
  }
+ 
+ /**
+ * @route GET /movie?search=
+ * @Desc GET Movie By Search
+ * @Access Public 
+ */
+const getMovieSearch = async (req: Request, res: Response) => {
+    const {search} = req.query;
 
+    try{
+        const data = await MovieService.getMoviesBySearch(search as string);
+        res.status(statusCode.OK).send(util.success(statusCode.OK,message.SEARCH_MOVIE_SUCCESS,data));
+    }
+    catch(error){
+        console.log(error);
+        res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,message.INTERNAL_SERVER_ERROR));
+    }
+}
 
 export default{
     createMovie,
     createMovieComment,
     getMovie,
-    updateMovieComment
+    updateMovieComment,
+    getMovieSearch
 }

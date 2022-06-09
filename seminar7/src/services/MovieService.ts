@@ -78,9 +78,25 @@ const updateMovieComment = async(movieId: string, commentId:string, userId: stri
     }
 }
 
+const getMoviesBySearch = async (search: string) : Promise<MovieInfo[]>=> {
+    const regex = (pattern: string) => new RegExp(`.*${pattern}.*`); //정규표현식을 만들어주는 간단한 함수
+
+    try{
+        const titleRegex: RegExp = regex(search); //정규표현식으로 만들기
+
+        const movies = await Movie.find({title: {$regex: titleRegex }}); //데이터베이스에서 정규표현식을 사용해서 찾기
+        return movies;
+
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     createMovie,
     createMovieComment,
     getMovie,
-    updateMovieComment
+    updateMovieComment,
+    getMoviesBySearch
 }
