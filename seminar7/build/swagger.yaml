@@ -1,0 +1,173 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: SOPT API docs
+  description: SOPT SERVER SEMINAR
+  license:
+    name: Jionee
+servers:
+  - url: 'http://localhost:8000/'
+components:
+  parameters: null
+  schemas:
+    user:
+      properties:
+        name:
+          type: string
+          description: 유저 이름
+        age:
+          type: number
+          description: 유저 나이
+        phone:
+          type: string
+          description: 핸드폰번호
+        email:
+          type: string
+          description: 이메일 주소
+        school:
+          properties:
+            name:
+              type: string
+              description: 학교 이름
+            major:
+              type: string
+              description: 전공
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+  examples:
+    userExample:
+      value:
+        name: 유지원
+        phone: '01011112222'
+        email: swaggerTest@naver.com
+        school:
+          name: 서울대학교
+          major: 컴퓨터공학부
+  responses:
+    successResponse:
+      description: successful request with no data
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              status: 200
+              success: true
+              message: message
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: 잘못된 요청
+    InternalServerError:
+      description: 서버 에러
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: 서버 내부 오류
+paths:
+  /user:
+    post:
+      tags:
+        - User
+      summary: 유저 생성
+      consumes:
+        - application/json
+      requestBody:
+        x-name: body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+            examples:
+              userExample:
+                $ref: '#/components/examples/userExample'
+      responses:
+        '200':
+          $ref: '#/components/responses/successResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/user/{userId}':
+    get:
+      tags:
+        - User
+      summary: 유저 정보 조회
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 유저 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 200
+                  success: true
+                  message: 유저 조회 성공
+                  data:
+                    school:
+                      name: 서울대학교
+                      major: 컴퓨터공학부
+                    _id: 6283a755c2f673e5e81a6fea
+                    name: 유지원
+                    phone: '01011112222'
+                    email: validateTest-email2@naver.com
+                    age: 20
+                    __v: 0
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - User
+      summary: 유저 정보 수정
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string
+      consumes:
+        - application/json
+      requestBody:
+        description: '\[Optional\] name, age, phone, email, school-name, school-major'
+        x-name: body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+    delete:
+      tags:
+        - User
+      summary: 유저 삭제
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: 유저 id
+          schema:
+            type: string

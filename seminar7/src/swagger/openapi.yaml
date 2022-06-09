@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: SOPT API docs
+  description: SOPT SERVER SEMINAR
+  license:
+    name: Jionee
+servers:
+  - url: http://localhost:8000/
+components:
+  parameters: null
+  #Schemas : model 정보
+  schemas:
+    user:
+      properties:
+        name:
+          type: string
+          description: 유저 이름
+        age:
+          type: number
+          description: 유저 나이
+        phone:
+          type: string
+          description: 핸드폰번호
+        email:
+          type: string
+          description: 이메일 주소
+        school:
+          properties:
+            name:
+              type: string
+              description: 학교 이름
+            major:
+              type: string
+              description: 전공
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+  #Examples
+  examples:
+    userExample:
+      value:
+        {
+          "name": "유지원",
+          "phone": "01011112222",
+          "email": "swaggerTest@naver.com",
+          "school": {
+            "name": "서울대학교",
+            "major": "컴퓨터공학부"
+          }
+        }
+  #Responses 재사용되는 애들
+  responses:
+    successResponse:
+        description: successful request with no data
+        content:
+          application/json:
+            schema:
+              type: object
+              example: {"status": 200, "success": true, "message": "message"}
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: 잘못된 요청
+    InternalServerError:
+      description: 서버 에러
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: 서버 내부 오류
+#Paths api 경로 지정
+paths:
+  /user:
+    $ref: './user.yaml#/~1user'
+  /user/{userId}:
+    $ref: './user.yaml#/~1user~1{userId}'
