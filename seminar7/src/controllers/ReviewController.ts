@@ -38,8 +38,11 @@ const createReview = async (req: Request, res: Response) => {
  */
 const getReviews = async (req:Request, res:Response) => {
     const {movieId} = req.params;
+    const {search} = req.query;
+
+    const page: number = Number(req.query.page|| 1);
     try{
-        const data = await ReviewService.getReviews(movieId);
+        const data = await ReviewService.getReviews(movieId, search as string, page as number);
         
         res.status(statusCode.OK).send(util.success(statusCode.OK,message.READ_REVIEW_SUCCESS,data));
     }catch(error){

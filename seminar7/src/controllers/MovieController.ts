@@ -133,7 +133,7 @@ const getMovieSearch = async (req: Request, res: Response) => {
 }
 
  /**
- * @route GET /movie?search=&option=
+ * @route GET /movie?search=&option=&page=
  * @Desc GET Movie By Search (Option)
  * @Access Public 
  */
@@ -149,8 +149,10 @@ const getMovieSearch = async (req: Request, res: Response) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
 
+    const page: number = Number(req.query.page || 1); //안들어오면 1로 가정하겠다.
+
     try{
-        const data = await MovieService.getMoviesBySearchWithOPtion(search as string, option as MovieOptionType);
+        const data = await MovieService.getMoviesBySearchWithOPtion(search as string, option as MovieOptionType, page);
         res.status(statusCode.OK).send(util.success(statusCode.OK,message.SEARCH_MOVIE_SUCCESS,data));
     }
     catch(error){

@@ -27,6 +27,7 @@ const message = {
     //리뷰
     CREATED_REVIEW_SUCCESS: '리뷰 작성 성공',
     READ_REVIEW_SUCCESS: '리뷰 조회 성공',
+    SEARCH_REVIEW_SUCCESS: '리뷰 검색 성공',
 
     //FILE
     CREATE_FILE_SUCCESS: '파일 업로드 성공'

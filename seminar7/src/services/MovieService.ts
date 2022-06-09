@@ -5,6 +5,7 @@ import { MovieCreateDto } from "../interfaces/movie/MovieCreateDto";
 import { MovieCommentInfo, MovieInfo } from "../interfaces/movie/MovieInfo";
 import { MovieOptionType } from "../interfaces/movie/MovieOptionType";
 import { MovieResponseDto } from "../interfaces/movie/MovieResponseDto";
+import { MoviesResponseDto } from "../interfaces/movie/MoviesResponseDto";
 import Movie from "../models/Movie";
 
 const createMovie = async (movieCreateDto: MovieCreateDto) :Promise<PostBaseResponseDto>=> {
@@ -94,19 +95,30 @@ const getMoviesBySearch = async (search: string) : Promise<MovieInfo[]>=> {
     }
 }
 
-const getMoviesBySearchWithOPtion = async (search: string, option: MovieOptionType) : Promise<MovieInfo[]>=> {
+const getMoviesBySearchWithOPtion = async (search: string, option: MovieOptionType, page: number) : Promise<MoviesResponseDto>=> {
     const regex = (pattern: string) => new RegExp(`.*${pattern}.*`); //정규표현식을 만들어주는 간단한 함수
 
     let movies: MovieInfo[] = [];
+
+    //pagenation
+    const perPage: number = 2;
+
     try{
         const titleRegex: RegExp = regex(search); //정규표현식으로 만들기
 
         //option 마다 검색 따로
         if(option === 'title'){
-            movies = await Movie.find({title: {$regex: titleRegex }}); //데이터베이스에서 정규표현식을 사용해서 찾기
+            //데이터베이스에서 정규표현식을 사용해서 찾기
+            movies = await Movie.find({title: {$regex: titleRegex }})
+                        .sort({createdAt: -1}) //최신순정렬
+                        .skip(perPage * (page-1)) 
+                        .limit(perPage);
         }
         else if (option === 'director'){
-            movies = await Movie.find({director: {$regex: titleRegex}});
+            movies = await Movie.find({director: {$regex: titleRegex}})
+                        .sort({createdAt: -1}) //최신순정렬
+                        .skip(perPage * (page-1)) 
+                        .limit(perPage);
         }
         else{
             movies = await Movie.find({
@@ -114,10 +126,20 @@ const getMoviesBySearchWithOPtion = async (search: string, option: MovieOptionTy
                     {title: {$regex: titleRegex}},
                     {director: {$regex: titleRegex}}
                 ]
-            });
+            })
+            .sort({createdAt: -1}) //최신순정렬
+            .skip(perPage * (page-1)) 
+            .limit(perPage);
         }
         
-        return movies;
+        const total: number = await Movie.countDocuments({}); //총 갯수 가져오기, 안에 filter 달아도 됨
+        const lastPage: number = Math.ceil(total/perPage);
+        
+        const data = {
+             movies, 
+             lastPage
+        }
+        return data;
 
     }catch(error){
         console.log(error);
