@@ -8,6 +8,7 @@ import MovieService from "../services/MovieService";
 import { stat } from "fs";
 import { MovieCommentCreaateDto } from "../interfaces/movie/MovieCommentCreateDto";
 import { MovieCommentUpdateDto } from "../interfaces/movie/MovieCommentUpdateDto";
+import { MovieOptionType } from "../interfaces/movie/MovieOptionType";
 
 /**
  * @route POST /movie
@@ -131,10 +132,38 @@ const getMovieSearch = async (req: Request, res: Response) => {
     }
 }
 
+ /**
+ * @route GET /movie?search=&option=
+ * @Desc GET Movie By Search (Option)
+ * @Access Public 
+ */
+  const getMovieSearchWithOption = async (req: Request, res: Response) => {
+    const {search, option} = req.query;
+
+    //Type 가드 만들기
+    const isOptionType = (option: string): option is MovieOptionType => { //함수 만들어서 타입인지 확인
+        return ["title", 'director', 'title_director'].indexOf(option) !== -1;
+    };
+
+    if(!isOptionType(option as string)){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+    }
+
+    try{
+        const data = await MovieService.getMoviesBySearchWithOPtion(search as string, option as MovieOptionType);
+        res.status(statusCode.OK).send(util.success(statusCode.OK,message.SEARCH_MOVIE_SUCCESS,data));
+    }
+    catch(error){
+        console.log(error);
+        res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,message.INTERNAL_SERVER_ERROR));
+    }
+}
+
 export default{
     createMovie,
     createMovieComment,
     getMovie,
     updateMovieComment,
-    getMovieSearch
+    getMovieSearch,
+    getMovieSearchWithOption
 }

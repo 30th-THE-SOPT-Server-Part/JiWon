@@ -3,6 +3,7 @@ import { MovieCommentCreaateDto } from "../interfaces/movie/MovieCommentCreateDt
 import { MovieCommentUpdateDto } from "../interfaces/movie/MovieCommentUpdateDto";
 import { MovieCreateDto } from "../interfaces/movie/MovieCreateDto";
 import { MovieCommentInfo, MovieInfo } from "../interfaces/movie/MovieInfo";
+import { MovieOptionType } from "../interfaces/movie/MovieOptionType";
 import { MovieResponseDto } from "../interfaces/movie/MovieResponseDto";
 import Movie from "../models/Movie";
 
@@ -93,10 +94,42 @@ const getMoviesBySearch = async (search: string) : Promise<MovieInfo[]>=> {
     }
 }
 
+const getMoviesBySearchWithOPtion = async (search: string, option: MovieOptionType) : Promise<MovieInfo[]>=> {
+    const regex = (pattern: string) => new RegExp(`.*${pattern}.*`); //정규표현식을 만들어주는 간단한 함수
+
+    let movies: MovieInfo[] = [];
+    try{
+        const titleRegex: RegExp = regex(search); //정규표현식으로 만들기
+
+        //option 마다 검색 따로
+        if(option === 'title'){
+            movies = await Movie.find({title: {$regex: titleRegex }}); //데이터베이스에서 정규표현식을 사용해서 찾기
+        }
+        else if (option === 'director'){
+            movies = await Movie.find({director: {$regex: titleRegex}});
+        }
+        else{
+            movies = await Movie.find({
+                $or: [
+                    {title: {$regex: titleRegex}},
+                    {director: {$regex: titleRegex}}
+                ]
+            });
+        }
+        
+        return movies;
+
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     createMovie,
     createMovieComment,
     getMovie,
     updateMovieComment,
-    getMoviesBySearch
+    getMoviesBySearch,
+    getMoviesBySearchWithOPtion
 }
