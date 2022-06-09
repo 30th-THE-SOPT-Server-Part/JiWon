@@ -22,6 +22,29 @@ const createFile = async(link:string, fileName: string): Promise<FileResponseDto
     }
 };
 
+const createFiles = async(imageList: {location: string, originalname: string}[]) :Promise<FileResponseDto[]> => {
+    try{
+        const data = await Promise.all(imageList.map(async image => { //promise all을 통해 병렬적으로 실행
+            const file = new File({
+                link: image.location,
+                fileName: image.originalname
+            });
+            await file.save();
+
+            return {
+                _id: file._id,
+                link: file.link
+            }
+        }));
+
+        return data;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
-    createFile
+    createFile,
+    createFiles
 }
